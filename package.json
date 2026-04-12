@@ -1,0 +1,41 @@
+{
+  "name": "credit-score-check",
+  "version": "1.0.0",
+  "description": "API for Credit Score Check",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "build": "tsup",
+    "start": "node dist/index.js",
+    "lint": "prettier --check . && eslint src/**/*.ts",
+    "format": "prettier --write .",
+    "prisma:generate": "npx prisma generate"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mnsv-solutions/credit-score-check.git"
+  },
+  "keywords": [],
+  "author": "Victor Ferreira",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/mnsv-solutions/credit-score-check/issues"
+  },
+  "homepage": "https://github.com/mnsv-solutions/credit-score-check#readme",
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.7.0",
+    "@prisma/client": "^7.7.0",
+    "dotenv": "^17.4.2",
+    "fastify": "^5.8.4"
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "prettier": "^3.8.2",
+    "prisma": "^7.4.0",
+    "ts-node": "^10.9.2",
+    "tsup": "^8.5.1",
+    "typescript": "^6.0.2"
+  }
+}

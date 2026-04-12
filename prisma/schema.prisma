@@ -1,0 +1,1234 @@
+generator client {
+  provider        = "prisma-client"
+  output          = "../generated/prisma"
+  previewFeatures = ["partialIndexes"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model genders {
+  gender_id   String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  gender_code String     @unique @db.VarChar(20)
+  gender_name String     @unique @db.VarChar(50)
+  created_at  DateTime   @default(now()) @db.Timestamptz(6)
+  created_by  String?    @db.Uuid
+  updated_at  DateTime   @default(now()) @db.Timestamptz(6)
+  updated_by  String?    @db.Uuid
+  is_active   Boolean    @default(true)
+  customers   customer[]
+}
+
+model marital_statuses {
+  marital_status_id   String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  marital_status_code String     @unique @db.VarChar(20)
+  marital_status_name String     @unique @db.VarChar(50)
+  created_at          DateTime   @default(now()) @db.Timestamptz(6)
+  created_by          String?    @db.Uuid
+  updated_at          DateTime   @default(now()) @db.Timestamptz(6)
+  updated_by          String?    @db.Uuid
+  is_active           Boolean    @default(true)
+  customers           customer[]
+}
+
+model countries {
+  country_id       String                     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  country_code     String                     @unique @db.VarChar(3)
+  country_name     String                     @unique @db.VarChar(100)
+  nationality_name String                     @unique @db.VarChar(100)
+  created_at       DateTime                   @default(now()) @db.Timestamptz(6)
+  created_by       String?                    @db.Uuid
+  updated_at       DateTime                   @default(now()) @db.Timestamptz(6)
+  updated_by       String?                    @db.Uuid
+  is_active        Boolean                    @default(true)
+  customer_address customer_address_details[]
+  customers        customer[]                 @relation("customer_nationality")
+}
+
+model government_id_types {
+  government_id_type_id   String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  government_id_type_code String                   @unique @db.VarChar(30)
+  government_id_type_name String                   @unique @db.VarChar(80)
+  created_at              DateTime                 @default(now()) @db.Timestamptz(6)
+  created_by              String?                  @db.Uuid
+  updated_at              DateTime                 @default(now()) @db.Timestamptz(6)
+  updated_by              String?                  @db.Uuid
+  is_active               Boolean                  @default(true)
+  customer_ids            customer_government_id[]
+}
+
+model contact_types {
+  contact_type_id   String                     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  contact_type_code String                     @unique @db.VarChar(30)
+  contact_type_name String                     @unique @db.VarChar(80)
+  created_at        DateTime                   @default(now()) @db.Timestamptz(6)
+  created_by        String?                    @db.Uuid
+  updated_at        DateTime                   @default(now()) @db.Timestamptz(6)
+  updated_by        String?                    @db.Uuid
+  is_active         Boolean                    @default(true)
+  contact_details   customer_contact_details[]
+}
+
+model income_source_types {
+  income_source_type_id   String                    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  income_source_type_code String                    @unique @db.VarChar(30)
+  income_source_type_name String                    @unique @db.VarChar(80)
+  created_at              DateTime                  @default(now()) @db.Timestamptz(6)
+  created_by              String?                   @db.Uuid
+  updated_at              DateTime                  @default(now()) @db.Timestamptz(6)
+  updated_by              String?                   @db.Uuid
+  is_active               Boolean                   @default(true)
+  income_sources          customer_income_sources[]
+}
+
+model liability_types {
+  liability_type_id   String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  liability_type_code String                 @unique @db.VarChar(30)
+  liability_type_name String                 @unique @db.VarChar(80)
+  created_at          DateTime               @default(now()) @db.Timestamptz(6)
+  created_by          String?                @db.Uuid
+  updated_at          DateTime               @default(now()) @db.Timestamptz(6)
+  updated_by          String?                @db.Uuid
+  is_active           Boolean                @default(true)
+  liabilities         customer_liabilities[]
+}
+
+model bank_account_types {
+  bank_account_type_id String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  account_type_code    String                  @unique @db.VarChar(20)
+  account_type_name    String                  @unique @db.VarChar(50)
+  created_at           DateTime                @default(now()) @db.Timestamptz(6)
+  created_by           String?                 @db.Uuid
+  updated_at           DateTime                @default(now()) @db.Timestamptz(6)
+  updated_by           String?                 @db.Uuid
+  is_active            Boolean                 @default(true)
+  bank_details         customer_bank_details[]
+}
+
+model document_types {
+  document_type_id   String                      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  document_type_code String                      @unique @db.VarChar(30)
+  document_type_name String                      @unique @db.VarChar(80)
+  created_at         DateTime                    @default(now()) @db.Timestamptz(6)
+  created_by         String?                     @db.Uuid
+  updated_at         DateTime                    @default(now()) @db.Timestamptz(6)
+  updated_by         String?                     @db.Uuid
+  is_active          Boolean                     @default(true)
+  documents          customer_document_details[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model address_types {
+  address_type_id                       String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  address_type_code                     String   @db.VarChar(30)
+  address_type_name                     String   @db.VarChar(80)
+  created_at                            DateTime @default(now()) @db.Timestamptz(6)
+  created_by                            String?  @db.Uuid
+  updated_at                            DateTime @default(now()) @db.Timestamptz(6)
+  updated_by                            String?  @db.Uuid
+  is_active                             Boolean  @default(true)
+  users_address_types_created_byTousers users?   @relation("address_types_created_byTousers", fields: [created_by], references: [user_id], onUpdate: NoAction, map: "fk_address_types_created_by")
+  users_address_types_updated_byTousers users?   @relation("address_types_updated_byTousers", fields: [updated_by], references: [user_id], onUpdate: NoAction, map: "fk_address_types_updated_by")
+
+  @@index([is_active], map: "idx_address_types_is_active")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model application_status {
+  status_id                                  String                       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  status_code                                String                       @db.VarChar(30)
+  status_name                                String                       @db.VarChar(80)
+  created_at                                 DateTime                     @default(now()) @db.Timestamptz(6)
+  created_by                                 String?                      @db.Uuid
+  updated_at                                 DateTime                     @default(now()) @db.Timestamptz(6)
+  updated_by                                 String?                      @db.Uuid
+  is_active                                  Boolean                      @default(true)
+  users_application_status_created_byTousers users?                       @relation("application_status_created_byTousers", fields: [created_by], references: [user_id], onUpdate: NoAction, map: "fk_application_status_created_by")
+  users_application_status_updated_byTousers users?                       @relation("application_status_updated_byTousers", fields: [updated_by], references: [user_id], onUpdate: NoAction, map: "fk_application_status_updated_by")
+  loan_application                           loan_application[]
+  application_action_history_from            application_action_history[] @relation("application_action_history_from_status")
+  application_action_history_to              application_action_history[] @relation("application_action_history_to_status")
+
+  @@index([is_active], map: "idx_application_status_is_active")
+}
+
+model application_status_audit {
+  audit_id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  application_number String   @db.VarChar(40)
+  dob_hash           String   @db.VarChar(128)
+  success            Boolean  @default(false)
+  reason_code        String   @default("UNKNOWN") @db.VarChar(30)
+  ip_address         String?  @db.VarChar(80)
+  user_agent         String?  @db.VarChar(255)
+  created_at         DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([application_number], map: "idx_status_audit_app_number")
+  @@index([created_at(sort: Desc)], map: "idx_status_audit_created_at")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model banks {
+  bank_id                       String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  bank_code                     String                  @db.VarChar(30)
+  bank_name                     String                  @db.VarChar(120)
+  created_at                    DateTime                @default(now()) @db.Timestamptz(6)
+  created_by                    String?                 @db.Uuid
+  updated_at                    DateTime                @default(now()) @db.Timestamptz(6)
+  updated_by                    String?                 @db.Uuid
+  is_active                     Boolean                 @default(true)
+  users_banks_created_byTousers users?                  @relation("banks_created_byTousers", fields: [created_by], references: [user_id], onUpdate: NoAction, map: "fk_banks_created_by")
+  users_banks_updated_byTousers users?                  @relation("banks_updated_byTousers", fields: [updated_by], references: [user_id], onUpdate: NoAction, map: "fk_banks_updated_by")
+  customer_banking              customer_bank_details[]
+
+  @@index([is_active], map: "idx_banks_is_active")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+
+model cibil_reports {
+  cibil_report_id           String                      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  application_id            String                      @unique(map: "uq_cibil_reports_application_id") @db.Uuid
+  request_id                String                      @unique(map: "uq_cibil_reports_request_id") @db.VarChar(50)
+  reference_id              String                      @unique(map: "uq_cibil_reports_reference_id") @db.VarChar(50)
+  bureau                    String                      @default("CIBIL") @db.VarChar(20)
+  report_date               DateTime                    @db.Timestamptz(6)
+  status                    String                      @db.VarChar(20)
+  cibil_score               Int
+  score_band                String                      @db.VarChar(20)
+  risk_level                String                      @db.VarChar(20)
+  score_version             String                      @db.VarChar(20)
+  total_accounts            Int
+  active_accounts           Int
+  closed_accounts           Int
+  total_outstanding_balance Decimal                     @db.Decimal(14, 2)
+  secured_loan_accounts     Int
+  unsecured_loan_accounts   Int
+  total_missed_payments     Int                         @default(0)
+  recent_delinquency        Boolean                     @default(false)
+  credit_utilization_ratio  Decimal                     @db.Decimal(5, 2)
+  average_account_age_years Decimal                     @db.Decimal(5, 2)
+  debt_to_income_estimate   Decimal                     @db.Decimal(5, 2)
+  created_at                DateTime                    @default(now()) @db.Timestamptz(6)
+  cibil_applicants          cibil_applicants?
+  cibil_accounts            cibil_accounts[]
+  cibil_enquiries           cibil_enquiries[]
+  cibil_payment_history     cibil_payment_history[]
+  cibil_risk_indicators     cibil_risk_indicators?
+  application_credit_check  application_credit_check[]
+  loan_application          loan_application            @relation(fields: [application_id], references: [application_id], onDelete: Cascade, onUpdate: NoAction)
+  application_ratio_summary application_ratio_summary[]
+
+  @@index([report_date], map: "idx_cibil_reports_report_date")
+  @@index([cibil_score], map: "idx_cibil_reports_cibil_score")
+  @@index([risk_level], map: "idx_cibil_reports_risk_level")
+}
+
+model cibil_applicants {
+  cibil_applicant_id String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  cibil_report_id    String        @unique(map: "uq_cibil_applicants_report_id") @db.Uuid
+  first_name         String        @db.VarChar(100)
+  last_name          String        @db.VarChar(100)
+  date_of_birth      DateTime      @db.Date
+  sin_number         String        @db.VarChar(20)
+  mobile_number      String        @db.VarChar(15)
+  cibil_reports      cibil_reports @relation(fields: [cibil_report_id], references: [cibil_report_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([sin_number], map: "idx_cibil_applicants_sin_number")
+  @@index([mobile_number], map: "idx_cibil_applicants_mobile_number")
+  @@index([date_of_birth], map: "idx_cibil_applicants_date_of_birth")
+}
+
+model cibil_accounts {
+  cibil_account_id      String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  cibil_report_id       String        @db.Uuid
+  account_type          String        @db.VarChar(50)
+  lender_name           String        @db.VarChar(100)
+  account_number_masked String        @db.VarChar(20)
+  ownership_type        String        @db.VarChar(50)
+  open_date             DateTime      @db.Date
+  current_balance       Decimal       @db.Decimal(14, 2)
+  credit_limit          Decimal?      @db.Decimal(14, 2)
+  payment_status        String        @db.VarChar(20)
+  days_past_due         Int           @default(0)
+  cibil_reports         cibil_reports @relation(fields: [cibil_report_id], references: [cibil_report_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([cibil_report_id], map: "idx_cibil_accounts_report_id")
+  @@index([lender_name], map: "idx_cibil_accounts_lender_name")
+}
+
+model cibil_payment_history {
+  cibil_payment_history_id String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  cibil_report_id          String        @db.Uuid
+  month_index              Int
+  status_code              String        @db.VarChar(10)
+  cibil_reports            cibil_reports @relation(fields: [cibil_report_id], references: [cibil_report_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([cibil_report_id, month_index], map: "uq_cibil_payment_history_report_month")
+  @@index([cibil_report_id], map: "idx_cibil_payment_history_report_id")
+}
+
+model cibil_enquiries {
+  cibil_enquiry_id String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  cibil_report_id  String        @db.Uuid
+  enquiry_date     DateTime      @db.Date
+  institution      String        @db.VarChar(100)
+  enquiry_type     String        @db.VarChar(50)
+  cibil_reports    cibil_reports @relation(fields: [cibil_report_id], references: [cibil_report_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([cibil_report_id, enquiry_date], map: "idx_cibil_enquiries_report_date")
+}
+
+model cibil_risk_indicators {
+  cibil_risk_indicator_id String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  cibil_report_id         String        @unique(map: "uq_cibil_risk_indicators_report_id") @db.Uuid
+  high_credit_utilization Boolean       @default(false)
+  recent_hard_enquiries   Boolean       @default(false)
+  thin_file               Boolean       @default(false)
+  credit_mix_healthy      Boolean       @default(true)
+  cibil_reports           cibil_reports @relation(fields: [cibil_report_id], references: [cibil_report_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model customer {
+  customer_id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  first_name             String   @db.VarChar(80)
+  last_name              String   @db.VarChar(80)
+  date_of_birth          DateTime @db.Date
+  gender_id              String?  @db.Uuid
+  marital_status_id      String?  @db.Uuid
+  nationality_country_id String?  @db.Uuid
+  sin_tax_id_masked      String?  @db.VarChar(30)
+  sin_tax_id_encrypted   Bytes?   @db.ByteA
+  created_at             DateTime @default(now()) @db.Timestamptz(6)
+  created_by             String   @db.Uuid
+  updated_at             DateTime @default(now()) @db.Timestamptz(6)
+  updated_by             String?  @db.Uuid
+  is_active              Boolean  @default(true)
+
+  // Relations
+  gender                           genders?          @relation(fields: [gender_id], references: [gender_id], onUpdate: NoAction)
+  marital_status                   marital_statuses? @relation(fields: [marital_status_id], references: [marital_status_id], onUpdate: NoAction)
+  nationality                      countries?        @relation("customer_nationality", fields: [nationality_country_id], references: [country_id], onUpdate: NoAction)
+  users_customer_created_byTousers users             @relation("customer_created_byTousers", fields: [created_by], references: [user_id], onUpdate: NoAction)
+  users_customer_updated_byTousers users?            @relation("customer_updated_byTousers", fields: [updated_by], references: [user_id], onDelete: Restrict, onUpdate: NoAction)
+
+  sub_loan           sub_loan[]
+  contact_details    customer_contact_details[]
+  address_details    customer_address_details[]
+  education_details  customer_education_details[]
+  employment_details customer_employment_details?
+  income_sources     customer_income_sources[]
+  liabilities        customer_liabilities[]
+  government_ids     customer_government_id[]
+  bank_details       customer_bank_details[]
+  documents          customer_document_details[]
+
+  application_ratio_summary application_ratio_summary[]
+
+  @@index([is_active], map: "idx_customer_active")
+  @@index([date_of_birth], map: "idx_customer_dob")
+  @@index([gender_id], map: "idx_customer_gender")
+  @@index([marital_status_id], map: "idx_customer_marital_status")
+  @@index([nationality_country_id], map: "idx_customer_nationality_country")
+}
+
+model customer_contact_details {
+  customer_contact_id String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customer_id         String   @db.Uuid
+  contact_type_id     String   @db.Uuid
+  contact_value       String   @db.VarChar(255)
+  is_primary          Boolean  @default(false)
+  is_verified         Boolean  @default(false)
+  created_at          DateTime @default(now()) @db.Timestamptz(6)
+  created_by          String?  @db.Uuid
+  updated_at          DateTime @default(now()) @db.Timestamptz(6)
+  updated_by          String?  @db.Uuid
+  is_active           Boolean  @default(true)
+
+  customer     customer      @relation(fields: [customer_id], references: [customer_id], onDelete: Cascade)
+  contact_type contact_types @relation(fields: [contact_type_id], references: [contact_type_id])
+
+  @@index([customer_id, is_active], map: "idx_customer_contact_customer_active")
+}
+
+model customer_address_details {
+  customer_address_id String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customer_id         String   @db.Uuid
+  address_type_id     String   @db.Uuid
+  line1               String   @db.VarChar(120)
+  line2               String?  @db.VarChar(120)
+  city                String   @db.VarChar(80)
+  state_province      String?  @db.VarChar(80)
+  postal_code         String?  @db.VarChar(20)
+  country_id          String   @db.Uuid
+  is_primary          Boolean  @default(false)
+  created_at          DateTime @default(now()) @db.Timestamptz(6)
+  is_active           Boolean  @default(true)
+
+  customer customer  @relation(fields: [customer_id], references: [customer_id], onDelete: Cascade)
+  country  countries @relation(fields: [country_id], references: [country_id])
+
+  @@index([customer_id, is_active], map: "idx_customer_address_customer_active")
+}
+
+model customer_employment_details {
+  customer_employment_id String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customer_id            String   @unique @db.Uuid
+  employment_type_id     String   @db.Uuid
+  employer_name          String?  @db.VarChar(150)
+  job_title              String?  @db.VarChar(120)
+  work_experience_years  Decimal? @db.Decimal(5, 2)
+  monthly_income         Decimal? @db.Decimal(12, 2)
+  is_active              Boolean  @default(true)
+
+  customer        customer         @relation(fields: [customer_id], references: [customer_id], onDelete: Cascade)
+  employment_type employment_types @relation(fields: [employment_type_id], references: [employment_type_id])
+}
+
+model customer_liabilities {
+  customer_liability_id    String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customer_id              String   @db.Uuid
+  liability_type_id        String   @db.Uuid
+  lender_name              String?  @db.VarChar(150)
+  account_reference_masked String?  @db.VarChar(60)
+  monthly_payment          Decimal  @default(0) @db.Decimal(12, 2)
+  outstanding_balance      Decimal? @db.Decimal(14, 2)
+  is_active                Boolean  @default(true)
+
+  customer       customer        @relation(fields: [customer_id], references: [customer_id], onDelete: Cascade)
+  liability_type liability_types @relation(fields: [liability_type_id], references: [liability_type_id])
+
+  @@index([customer_id, is_active], map: "idx_customer_liabilities_customer_active")
+}
+
+model customer_government_id {
+  customer_government_id_id      String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customer_id                    String  @db.Uuid
+  government_id_type_id          String  @db.Uuid
+  government_id_number_masked    String  @db.VarChar(80)
+  government_id_number_encrypted Bytes   @db.ByteA
+  is_primary                     Boolean @default(true)
+  is_active                      Boolean @default(true)
+
+  customer customer            @relation(fields: [customer_id], references: [customer_id], onDelete: Cascade)
+  id_type  government_id_types @relation(fields: [government_id_type_id], references: [government_id_type_id])
+
+  @@index([customer_id, is_active], map: "idx_customer_government_id_customer_active")
+}
+
+model customer_bank_details {
+  customer_bank_detail_id  String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customer_id              String  @db.Uuid
+  bank_id                  String  @db.Uuid
+  bank_account_type_id     String  @db.Uuid
+  account_number_masked    String  @db.VarChar(40)
+  account_number_encrypted Bytes?  @db.ByteA
+  is_primary               Boolean @default(true)
+  is_active                Boolean @default(true)
+
+  customer     customer           @relation(fields: [customer_id], references: [customer_id], onDelete: Cascade)
+  bank         banks              @relation(fields: [bank_id], references: [bank_id])
+  account_type bank_account_types @relation(fields: [bank_account_type_id], references: [bank_account_type_id])
+
+  @@index([customer_id, is_active], map: "idx_customer_bank_customer_active")
+}
+
+model customer_document_details {
+  customer_document_id String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customer_id          String  @db.Uuid
+  document_type_id     String  @db.Uuid
+  document_name        String  @db.VarChar(255)
+  document_path        String  @db.VarChar(500)
+  mime_type            String? @db.VarChar(100)
+  file_size_bytes      BigInt?
+  is_verified          Boolean @default(false)
+  is_active            Boolean @default(true)
+
+  customer      customer       @relation(fields: [customer_id], references: [customer_id], onDelete: Cascade)
+  document_type document_types @relation(fields: [document_type_id], references: [document_type_id])
+
+  @@index([customer_id, is_active], map: "idx_customer_document_customer_active")
+}
+
+model customer_education_details {
+  customer_education_id String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customer_id           String  @db.Uuid
+  education_level_id    String  @db.Uuid
+  institution_id        String? @db.Uuid
+  field_of_study        String? @db.VarChar(150)
+  graduation_year       Int?
+  is_active             Boolean @default(true)
+
+  customer        customer         @relation(fields: [customer_id], references: [customer_id], onDelete: Cascade)
+  education_level education_levels @relation(fields: [education_level_id], references: [education_level_id])
+  institution     institutions?    @relation(fields: [institution_id], references: [institution_id])
+
+  @@index([customer_id, is_active], map: "idx_customer_education_customer_active")
+}
+
+model customer_income_sources {
+  customer_income_source_id String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customer_id               String   @db.Uuid
+  income_source_type_id     String   @db.Uuid
+  monthly_amount            Decimal? @db.Decimal(12, 2)
+  description               String?  @db.VarChar(255)
+  is_active                 Boolean  @default(true)
+
+  customer    customer            @relation(fields: [customer_id], references: [customer_id], onDelete: Cascade)
+  income_type income_source_types @relation(fields: [income_source_type_id], references: [income_source_type_id])
+
+  @@index([customer_id, is_active], map: "idx_customer_income_source_customer_active")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model decision_types {
+  decision_type_id                       String                       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  decision_code                          String                       @db.VarChar(20)
+  decision_name                          String                       @db.VarChar(80)
+  created_at                             DateTime                     @default(now()) @db.Timestamptz(6)
+  created_by                             String?                      @db.Uuid
+  updated_at                             DateTime                     @default(now()) @db.Timestamptz(6)
+  updated_by                             String?                      @db.Uuid
+  is_active                              Boolean                      @default(true)
+  users_decision_types_created_byTousers users?                       @relation("decision_types_created_byTousers", fields: [created_by], references: [user_id], onUpdate: NoAction, map: "fk_decision_types_created_by")
+  users_decision_types_updated_byTousers users?                       @relation("decision_types_updated_byTousers", fields: [updated_by], references: [user_id], onUpdate: NoAction, map: "fk_decision_types_updated_by")
+  application_action_history             application_action_history[]
+
+  @@index([is_active], map: "idx_decision_types_is_active")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model education_levels {
+  education_level_id                       String                       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  level_code                               String                       @db.VarChar(30)
+  level_name                               String                       @db.VarChar(80)
+  created_at                               DateTime                     @default(now()) @db.Timestamptz(6)
+  created_by                               String?                      @db.Uuid
+  updated_at                               DateTime                     @default(now()) @db.Timestamptz(6)
+  updated_by                               String?                      @db.Uuid
+  is_active                                Boolean                      @default(true)
+  users_education_levels_created_byTousers users?                       @relation("education_levels_created_byTousers", fields: [created_by], references: [user_id], onUpdate: NoAction, map: "fk_education_levels_created_by")
+  users_education_levels_updated_byTousers users?                       @relation("education_levels_updated_byTousers", fields: [updated_by], references: [user_id], onUpdate: NoAction, map: "fk_education_levels_updated_by")
+  customer_edu                             customer_education_details[]
+
+  @@index([is_active], map: "idx_education_levels_is_active")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model employment_types {
+  employment_type_id                       String                        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  employment_type_code                     String                        @db.VarChar(30)
+  employment_type_name                     String                        @db.VarChar(80)
+  created_at                               DateTime                      @default(now()) @db.Timestamptz(6)
+  created_by                               String?                       @db.Uuid
+  updated_at                               DateTime                      @default(now()) @db.Timestamptz(6)
+  updated_by                               String?                       @db.Uuid
+  is_active                                Boolean                       @default(true)
+  users_employment_types_created_byTousers users?                        @relation("employment_types_created_byTousers", fields: [created_by], references: [user_id], onUpdate: NoAction, map: "fk_employment_types_created_by")
+  users_employment_types_updated_byTousers users?                        @relation("employment_types_updated_byTousers", fields: [updated_by], references: [user_id], onUpdate: NoAction, map: "fk_employment_types_updated_by")
+  customer_emp                             customer_employment_details[]
+
+  @@index([is_active], map: "idx_employment_types_is_active")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model institutions {
+  institution_id                       String                       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  institution_name                     String                       @db.VarChar(150)
+  city                                 String?                      @db.VarChar(80)
+  country                              String?                      @db.VarChar(80)
+  created_at                           DateTime                     @default(now()) @db.Timestamptz(6)
+  created_by                           String?                      @db.Uuid
+  updated_at                           DateTime                     @default(now()) @db.Timestamptz(6)
+  updated_by                           String?                      @db.Uuid
+  is_active                            Boolean                      @default(true)
+  users_institutions_created_byTousers users?                       @relation("institutions_created_byTousers", fields: [created_by], references: [user_id], onUpdate: NoAction, map: "fk_institutions_created_by")
+  users_institutions_updated_byTousers users?                       @relation("institutions_updated_byTousers", fields: [updated_by], references: [user_id], onUpdate: NoAction, map: "fk_institutions_updated_by")
+  customer_edu                         customer_education_details[]
+
+  @@index([is_active], map: "idx_institutions_is_active")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model loan_application {
+  application_id                           String                              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  application_number                       String                              @unique(map: "uq_loan_application_number") @db.VarChar(40)
+  status_id                                String                              @db.Uuid
+  loan_type_id                             String?                             @db.Uuid
+  requested_amount                         Decimal?                            @db.Decimal(12, 2)
+  tenure_months                            Int?
+  interest_rate                            Decimal?                            @db.Decimal(5, 2)
+  approved_loan_amount                     Decimal?                            @db.Decimal(14, 2)
+  approved_interest_rate                   Decimal?                            @db.Decimal(5, 2)
+  approved_tenure_months                   Int?
+  approved_emi                             Decimal?                            @db.Decimal(14, 2)
+  created_at                               DateTime                            @default(now()) @db.Timestamptz(6)
+  created_by                               String                              @db.Uuid
+  updated_at                               DateTime                            @default(now()) @db.Timestamptz(6)
+  updated_by                               String?                             @db.Uuid
+  is_active                                Boolean                             @default(true)
+  users_loan_application_created_byTousers users                               @relation("loan_application_created_byTousers", fields: [created_by], references: [user_id], onUpdate: NoAction, map: "fk_loan_application_created_by")
+  loan_types                               loan_types?                         @relation(fields: [loan_type_id], references: [loan_type_id], onUpdate: NoAction, map: "fk_loan_application_loan_type")
+  application_status                       application_status                  @relation(fields: [status_id], references: [status_id], onUpdate: NoAction, map: "fk_loan_application_status")
+  users_loan_application_updated_byTousers users?                              @relation("loan_application_updated_byTousers", fields: [updated_by], references: [user_id], onDelete: Restrict, onUpdate: NoAction, map: "fk_loan_application_updated_by")
+  cibil_reports                            cibil_reports?
+  application_credit_check                 application_credit_check[]
+  loan_payment                             loan_payment[]
+  repayment_schedule                       repayment_schedule[]
+  sub_loan                                 sub_loan[]
+  application_communication_history        application_communication_history[]
+  application_message_attachment           application_message_attachment[]
+  application_ratio_summary                application_ratio_summary?
+  applicationEligibilitySummaries          application_eligibility_summary[]
+  application_action_history               application_action_history[]
+  application_assignment                   application_assignment[]
+
+  @@index([is_active], map: "idx_loan_application_active")
+  @@index([status_id], map: "idx_loan_application_status")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model loan_payment {
+  payment_id                           String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  application_id                       String              @db.Uuid
+  schedule_id                          String?             @db.Uuid
+  payment_reference                    String?             @db.VarChar(60)
+  payment_date                         DateTime            @db.Timestamptz(6)
+  payment_amount                       Decimal             @db.Decimal(12, 2)
+  payment_method                       String?             @db.VarChar(30)
+  payment_status                       String              @default("SUCCESS") @db.VarChar(30)
+  transaction_id                       String?             @db.VarChar(100)
+  remarks                              String?             @db.VarChar(255)
+  created_at                           DateTime            @default(now()) @db.Timestamptz(6)
+  created_by                           String?             @db.Uuid
+  updated_at                           DateTime            @default(now()) @db.Timestamptz(6)
+  updated_by                           String?             @db.Uuid
+  is_active                            Boolean             @default(true)
+  users_loan_payment_created_byTousers users?              @relation("loan_payment_created_byTousers", fields: [created_by], references: [user_id], onUpdate: NoAction, map: "fk_loan_payment_created_by")
+  users_loan_payment_updated_byTousers users?              @relation("loan_payment_updated_byTousers", fields: [updated_by], references: [user_id], onUpdate: NoAction, map: "fk_loan_payment_updated_by")
+  loan_application                     loan_application    @relation(fields: [application_id], references: [application_id], onDelete: Cascade, onUpdate: NoAction)
+  repayment_schedule                   repayment_schedule? @relation(fields: [schedule_id], references: [schedule_id], onUpdate: NoAction)
+
+  @@index([application_id])
+  @@index([schedule_id])
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model loan_types {
+  loan_type_id                       String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  loan_type_code                     String               @db.VarChar(30)
+  loan_type_name                     String               @db.VarChar(80)
+  created_at                         DateTime             @default(now()) @db.Timestamptz(6)
+  created_by                         String?              @db.Uuid
+  updated_at                         DateTime             @default(now()) @db.Timestamptz(6)
+  updated_by                         String?              @db.Uuid
+  is_active                          Boolean              @default(true)
+  loan_application                   loan_application[]
+  users_loan_types_created_byTousers users?               @relation("loan_types_created_byTousers", fields: [created_by], references: [user_id], onUpdate: NoAction, map: "fk_loan_types_created_by")
+  users_loan_types_updated_byTousers users?               @relation("loan_types_updated_byTousers", fields: [updated_by], references: [user_id], onUpdate: NoAction, map: "fk_loan_types_updated_by")
+  loan_product_config                loan_product_config?
+
+  @@index([is_active], map: "idx_loan_types_is_active")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model repayment_schedule {
+  schedule_id                                String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  application_id                             String           @db.Uuid
+  installment_number                         Int
+  due_date                                   DateTime         @db.Date
+  opening_balance                            Decimal          @db.Decimal(12, 2)
+  principal_component                        Decimal          @db.Decimal(12, 2)
+  interest_component                         Decimal          @db.Decimal(12, 2)
+  installment_amount                         Decimal          @db.Decimal(12, 2)
+  closing_balance                            Decimal          @db.Decimal(12, 2)
+  paid_amount                                Decimal          @default(0) @db.Decimal(12, 2)
+  payment_status                             String           @default("PENDING") @db.VarChar(30)
+  paid_date                                  DateTime?        @db.Timestamptz(6)
+  created_at                                 DateTime         @default(now()) @db.Timestamptz(6)
+  created_by                                 String?          @db.Uuid
+  updated_at                                 DateTime         @default(now()) @db.Timestamptz(6)
+  updated_by                                 String?          @db.Uuid
+  is_active                                  Boolean          @default(true)
+  loan_payment                               loan_payment[]
+  users_repayment_schedule_created_byTousers users?           @relation("repayment_schedule_created_byTousers", fields: [created_by], references: [user_id], onUpdate: NoAction, map: "fk_repayment_schedule_created_by")
+  users_repayment_schedule_updated_byTousers users?           @relation("repayment_schedule_updated_byTousers", fields: [updated_by], references: [user_id], onUpdate: NoAction, map: "fk_repayment_schedule_updated_by")
+  loan_application                           loan_application @relation(fields: [application_id], references: [application_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([application_id, installment_number], map: "ux_repayment_schedule_app_installment")
+  @@index([application_id, due_date])
+  @@index([application_id, payment_status])
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model roles {
+  role_id                       String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  role_code                     String   @db.VarChar(30)
+  role_name                     String   @db.VarChar(80)
+  created_at                    DateTime @default(now()) @db.Timestamptz(6)
+  created_by                    String?  @db.Uuid
+  updated_at                    DateTime @default(now()) @db.Timestamptz(6)
+  updated_by                    String?  @db.Uuid
+  is_active                     Boolean  @default(true)
+  users_roles_created_byTousers users?   @relation("roles_created_byTousers", fields: [created_by], references: [user_id], onUpdate: NoAction, map: "fk_roles_created_by")
+  users_roles_updated_byTousers users?   @relation("roles_updated_byTousers", fields: [updated_by], references: [user_id], onUpdate: NoAction, map: "fk_roles_updated_by")
+
+  @@unique([role_code], map: "uq_roles_role_code")
+  @@index([is_active], map: "idx_roles_is_active")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model sub_loan {
+  sub_loan_id                      String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  application_id                   String           @db.Uuid
+  customer_id                      String           @db.Uuid
+  applicant_type                   Int              @db.SmallInt
+  created_at                       DateTime         @default(now()) @db.Timestamptz(6)
+  created_by                       String           @db.Uuid
+  updated_at                       DateTime         @default(now()) @db.Timestamptz(6)
+  updated_by                       String?          @db.Uuid
+  is_active                        Boolean          @default(true)
+  loan_application                 loan_application @relation(fields: [application_id], references: [application_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_sub_loan_application")
+  users_sub_loan_created_byTousers users            @relation("sub_loan_created_byTousers", fields: [created_by], references: [user_id], onUpdate: NoAction, map: "fk_sub_loan_created_by")
+  customer                         customer         @relation(fields: [customer_id], references: [customer_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_sub_loan_customer")
+  users_sub_loan_updated_byTousers users?           @relation("sub_loan_updated_byTousers", fields: [updated_by], references: [user_id], onDelete: Restrict, onUpdate: NoAction, map: "fk_sub_loan_updated_by")
+
+  @@unique([application_id, customer_id], map: "ux_sub_loan_app_customer_active", where: raw("(is_active = true)"))
+  @@index([application_id, applicant_type, customer_id], map: "idx_sub_loan_lookup", where: raw("(is_active = true)"))
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model user_address {
+  address_id      String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id         String   @db.Uuid
+  address_type_id String   @db.Uuid
+  line1           String   @db.VarChar(120)
+  line2           String?  @db.VarChar(120)
+  city            String   @db.VarChar(80)
+  state_province  String?  @db.VarChar(80)
+  postal_code     String?  @db.VarChar(20)
+  country         String   @db.VarChar(80)
+  is_primary      Boolean  @default(false)
+  created_at      DateTime @default(now()) @db.Timestamptz(6)
+  created_by      String?  @db.Uuid
+  updated_at      DateTime @default(now()) @db.Timestamptz(6)
+  updated_by      String?  @db.Uuid
+  is_active       Boolean  @default(true)
+
+  @@index([user_id, is_primary], map: "idx_user_address_primary", where: raw("(is_active = true)"))
+  @@index([user_id, is_active], map: "idx_user_address_user_active")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model user_bank_account {
+  bank_account_id     String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id             String   @db.Uuid
+  bank_id             String   @db.Uuid
+  account_holder_name String   @db.VarChar(120)
+  account_number      String   @db.VarChar(40)
+  account_type        String?  @db.VarChar(30)
+  ifsc_routing_code   String?  @db.VarChar(30)
+  branch_name         String?  @db.VarChar(120)
+  created_at          DateTime @default(now()) @db.Timestamptz(6)
+  created_by          String?  @db.Uuid
+  updated_at          DateTime @default(now()) @db.Timestamptz(6)
+  updated_by          String?  @db.Uuid
+  is_active           Boolean  @default(true)
+  users               users    @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user_bank_accounts_user")
+
+  @@unique([user_id, account_number], map: "ux_user_bank_accounts_user_number_active", where: raw("(is_active = true)"))
+  @@index([user_id, is_active], map: "idx_user_bank_accounts_user_active")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model user_education {
+  user_education_id  String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id            String    @db.Uuid
+  education_level_id String    @db.Uuid
+  institution_id     String?   @db.Uuid
+  program_name       String?   @db.VarChar(150)
+  start_date         DateTime? @db.Date
+  end_date           DateTime? @db.Date
+  grade_percent      Decimal?  @db.Decimal(5, 2)
+  created_at         DateTime  @default(now()) @db.Timestamptz(6)
+  created_by         String?   @db.Uuid
+  updated_at         DateTime  @default(now()) @db.Timestamptz(6)
+  updated_by         String?   @db.Uuid
+  is_active          Boolean   @default(true)
+
+  @@index([user_id, is_active], map: "idx_user_education_user_active")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model user_employment {
+  employment_id      String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id            String    @db.Uuid
+  employment_type_id String?   @db.Uuid
+  employer_name      String?   @db.VarChar(150)
+  job_title          String?   @db.VarChar(120)
+  monthly_income     Decimal?  @db.Decimal(12, 2)
+  start_date         DateTime? @db.Date
+  end_date           DateTime? @db.Date
+  created_at         DateTime  @default(now()) @db.Timestamptz(6)
+  created_by         String?   @db.Uuid
+  updated_at         DateTime  @default(now()) @db.Timestamptz(6)
+  updated_by         String?   @db.Uuid
+  is_active          Boolean   @default(true)
+
+  @@index([user_id, is_active], map: "idx_user_employment_user_active")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model user_profile {
+  profile_id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id              String    @unique @db.Uuid
+  date_of_birth        DateTime? @db.Date
+  gender               String?   @db.VarChar(20)
+  marital_status       String?   @db.VarChar(20)
+  nationality          String?   @db.VarChar(80)
+  government_id_type   String?   @db.VarChar(30)
+  government_id_number String?   @db.VarChar(80)
+  created_at           DateTime  @default(now()) @db.Timestamptz(6)
+  created_by           String?   @db.Uuid
+  updated_at           DateTime  @default(now()) @db.Timestamptz(6)
+  updated_by           String?   @db.Uuid
+  is_active            Boolean   @default(true)
+
+  @@unique([government_id_type, government_id_number], map: "ux_user_profile_govt_id_active", where: raw("((is_active = true) AND (government_id_type IS NOT NULL) AND (government_id_number IS NOT NULL))"))
+  @@index([is_active], map: "idx_user_profile_active")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model users {
+  user_id                                                            String                       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  role_id                                                            String                       @db.Uuid
+  first_name                                                         String                       @db.VarChar(80)
+  last_name                                                          String                       @db.VarChar(80)
+  email                                                              String                       @unique(map: "uq_users_email") @db.VarChar(255)
+  password_hash                                                      String                       @db.VarChar(255)
+  phone                                                              String?                      @db.VarChar(20)
+  last_login_at                                                      DateTime?                    @db.Timestamptz(6)
+  failed_login_attempts                                              Int                          @default(0)
+  locked_until                                                       DateTime?                    @db.Timestamptz(6)
+  password_changed_at                                                DateTime?                    @db.Timestamptz(6)
+  is_email_verified                                                  Boolean                      @default(false)
+  is_system_user                                                     Boolean                      @default(false)
+  is_active                                                          Boolean                      @default(true)
+  is_blocked                                                         Boolean                      @default(false)
+  is_logged_in                                                       Boolean                      @default(false)
+  created_at                                                         DateTime                     @default(now()) @db.Timestamptz(6)
+  updated_at                                                         DateTime                     @default(now()) @db.Timestamptz(6)
+  address_types_address_types_created_byTousers                      address_types[]              @relation("address_types_created_byTousers")
+  address_types_address_types_updated_byTousers                      address_types[]              @relation("address_types_updated_byTousers")
+  application_status_application_status_created_byTousers            application_status[]         @relation("application_status_created_byTousers")
+  application_status_application_status_updated_byTousers            application_status[]         @relation("application_status_updated_byTousers")
+  banks_banks_created_byTousers                                      banks[]                      @relation("banks_created_byTousers")
+  banks_banks_updated_byTousers                                      banks[]                      @relation("banks_updated_byTousers")
+  customer_customer_created_byTousers                                customer[]                   @relation("customer_created_byTousers")
+  customer_customer_updated_byTousers                                customer[]                   @relation("customer_updated_byTousers")
+  decision_types_decision_types_created_byTousers                    decision_types[]             @relation("decision_types_created_byTousers")
+  decision_types_decision_types_updated_byTousers                    decision_types[]             @relation("decision_types_updated_byTousers")
+  education_levels_education_levels_created_byTousers                education_levels[]           @relation("education_levels_created_byTousers")
+  education_levels_education_levels_updated_byTousers                education_levels[]           @relation("education_levels_updated_byTousers")
+  employment_types_employment_types_created_byTousers                employment_types[]           @relation("employment_types_created_byTousers")
+  employment_types_employment_types_updated_byTousers                employment_types[]           @relation("employment_types_updated_byTousers")
+  institutions_institutions_created_byTousers                        institutions[]               @relation("institutions_created_byTousers")
+  institutions_institutions_updated_byTousers                        institutions[]               @relation("institutions_updated_byTousers")
+  loan_application_loan_application_created_byTousers                loan_application[]           @relation("loan_application_created_byTousers")
+  loan_application_loan_application_updated_byTousers                loan_application[]           @relation("loan_application_updated_byTousers")
+  loan_payment_loan_payment_created_byTousers                        loan_payment[]               @relation("loan_payment_created_byTousers")
+  loan_payment_loan_payment_updated_byTousers                        loan_payment[]               @relation("loan_payment_updated_byTousers")
+  loan_types_loan_types_created_byTousers                            loan_types[]                 @relation("loan_types_created_byTousers")
+  loan_types_loan_types_updated_byTousers                            loan_types[]                 @relation("loan_types_updated_byTousers")
+  repayment_schedule_repayment_schedule_created_byTousers            repayment_schedule[]         @relation("repayment_schedule_created_byTousers")
+  repayment_schedule_repayment_schedule_updated_byTousers            repayment_schedule[]         @relation("repayment_schedule_updated_byTousers")
+  roles_roles_created_byTousers                                      roles[]                      @relation("roles_created_byTousers")
+  roles_roles_updated_byTousers                                      roles[]                      @relation("roles_updated_byTousers")
+  sub_loan_sub_loan_created_byTousers                                sub_loan[]                   @relation("sub_loan_created_byTousers")
+  sub_loan_sub_loan_updated_byTousers                                sub_loan[]                   @relation("sub_loan_updated_byTousers")
+  user_bank_account                                                  user_bank_account[]
+  team_members                                                       team_members[]
+  loan_product_config_loan_product_config_created_byTousers          loan_product_config[]        @relation("loan_product_config_created_byTousers")
+  loan_product_config_loan_product_config_updated_byTousers          loan_product_config[]        @relation("loan_product_config_updated_byTousers")
+  application_action_history_performed_by                            application_action_history[] @relation("application_action_history_performed_by")
+  application_action_history_created_by                              application_action_history[] @relation("application_action_history_created_by")
+  application_action_history_updated_by                              application_action_history[] @relation("application_action_history_updated_by")
+  application_assignment_application_assignment_assigned_userTousers application_assignment[]     @relation("application_assignment_assigned_userTousers")
+  application_assignment_application_assignment_assigned_byTousers   application_assignment[]     @relation("application_assignment_assigned_byTousers")
+  application_assignment_application_assignment_unassigned_byTousers application_assignment[]     @relation("application_assignment_unassigned_byTousers")
+  application_assignment_application_assignment_created_byTousers    application_assignment[]     @relation("application_assignment_created_byTousers")
+  application_assignment_application_assignment_updated_byTousers    application_assignment[]     @relation("application_assignment_updated_byTousers")
+  user_auth_audit_log                                                user_auth_audit_log[]
+
+  @@index([role_id, is_active], map: "idx_users_role_active")
+}
+
+model application_credit_check {
+  credit_check_id String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  application_id  String  @db.Uuid
+  cibil_report_id String? @db.Uuid
+
+  request_id          String? @db.VarChar(50)
+  bureau_name         String  @default("CIBIL") @db.VarChar(20)
+  bureau_reference_id String? @db.VarChar(50)
+  bureau_status       String  @db.VarChar(20)
+
+  credit_score Int?
+  score_band   String? @db.VarChar(20)
+  risk_level   String? @db.VarChar(20)
+
+  checked_at   DateTime @default(now()) @db.Timestamptz(6)
+  checked_by   String?  @db.Uuid
+  remarks      String?
+  raw_response Json?
+  is_latest    Boolean  @default(true)
+
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  updated_at DateTime @default(now()) @updatedAt @db.Timestamptz(6)
+
+  loan_application loan_application @relation(fields: [application_id], references: [application_id])
+  cibil_report     cibil_reports?   @relation(fields: [cibil_report_id], references: [cibil_report_id])
+
+  @@index([application_id], map: "idx_application_credit_check_application_id")
+  @@index([checked_at], map: "idx_application_credit_check_checked_at")
+  @@index([bureau_status], map: "idx_application_credit_check_bureau_status")
+}
+
+model application_communication_history {
+  message_id     String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  application_id String @db.Uuid
+
+  sender_user_id String @db.Uuid
+  sender_type    String @db.VarChar(30)
+
+  recipient_user_id String? @db.Uuid
+  recipient_type    String? @db.VarChar(30)
+
+  message_text     String?
+  message_category String  @db.VarChar(30)
+
+  is_internal Boolean @default(false)
+
+  send_email Boolean @default(false)
+  send_sms   Boolean @default(false)
+
+  email_status String? @default("NOT_REQUESTED") @db.VarChar(20)
+  sms_status   String? @default("NOT_REQUESTED") @db.VarChar(20)
+
+  has_attachment Boolean @default(false)
+
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  created_by String   @db.Uuid
+
+  updated_at DateTime? @db.Timestamptz(6)
+  updated_by String?   @db.Uuid
+
+  is_deleted Boolean @default(false)
+
+  loan_application    loan_application                 @relation(fields: [application_id], references: [application_id], onDelete: Restrict, onUpdate: NoAction)
+  message_attachments application_message_attachment[]
+
+  @@index([application_id], map: "idx_application_communication_history_application_id")
+  @@index([sender_user_id], map: "idx_application_communication_history_sender_user_id")
+  @@index([created_at], map: "idx_application_communication_history_created_at")
+  @@index([is_internal], map: "idx_application_communication_history_is_internal")
+}
+
+model application_message_attachment {
+  attachment_id  String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  message_id     String @db.Uuid
+  application_id String @db.Uuid
+
+  document_name      String @db.VarChar(255)
+  original_file_name String @db.VarChar(255)
+  document_path      String @db.VarChar(500)
+
+  mime_type       String? @db.VarChar(100)
+  file_size_bytes BigInt?
+
+  uploaded_by String   @db.Uuid
+  created_at  DateTime @default(now()) @db.Timestamptz(6)
+
+  is_active  Boolean @default(true)
+  is_deleted Boolean @default(false)
+
+  communication_history application_communication_history @relation(fields: [message_id], references: [message_id], onDelete: Restrict, onUpdate: Cascade)
+  loan_application      loan_application                  @relation(fields: [application_id], references: [application_id], onDelete: Restrict, onUpdate: NoAction)
+
+  @@index([message_id], map: "idx_application_message_attachment_message_id")
+  @@index([application_id], map: "idx_application_message_attachment_application_id")
+}
+
+model application_ratio_summary {
+  ratio_summary_id   String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  application_id     String @db.Uuid
+  application_number String @db.VarChar(40)
+  customer_id        String @db.Uuid
+
+  dbr                Decimal @default(0) @db.Decimal(5, 2)
+  emi_to_income      Decimal @default(0) @db.Decimal(5, 2)
+  credit_utilization Decimal @default(0) @db.Decimal(5, 2)
+  loan_to_income     Decimal @default(0) @db.Decimal(10, 4)
+
+  monthly_income              Decimal @default(0) @db.Decimal(12, 2)
+  annual_income               Decimal @default(0) @db.Decimal(14, 2)
+  total_monthly_debt_payments Decimal @default(0) @db.Decimal(12, 2)
+  proposed_emi                Decimal @default(0) @db.Decimal(14, 2)
+  requested_loan_amount       Decimal @default(0) @db.Decimal(14, 2)
+
+  cibil_report_id     String?  @db.Uuid
+  calculation_version String   @default("v1") @db.VarChar(30)
+  calculated_at       DateTime @default(now()) @db.Timestamptz(6)
+  remarks             String?  @db.Text
+  input_snapshot_json Json?
+
+  created_by String?  @db.Uuid
+  updated_by String?  @db.Uuid
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  updated_at DateTime @updatedAt @db.Timestamptz(6)
+  is_active  Boolean  @default(true)
+
+  loan_application             loan_application @relation(fields: [application_id], references: [application_id])
+  customer                     customer         @relation(fields: [customer_id], references: [customer_id])
+  cibilReports                 cibil_reports?   @relation(fields: [cibil_reportsCibil_report_id], references: [cibil_report_id])
+  cibil_reportsCibil_report_id String?          @db.Uuid
+
+  @@unique([application_id])
+  @@index([application_number])
+  @@index([customer_id])
+}
+
+model eligibility_rule_set {
+  rule_set_id           String                            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  rule_set_code         String                            @db.VarChar(50)
+  rule_set_name         String                            @db.VarChar(150)
+  version_no            Int
+  description           String?                           @db.Text
+  effective_from        DateTime?                         @db.Timestamptz(6)
+  effective_to          DateTime?                         @db.Timestamptz(6)
+  is_active             Boolean                           @default(true)
+  created_by            String?                           @db.Uuid
+  updated_by            String?                           @db.Uuid
+  created_at            DateTime                          @default(now()) @db.Timestamptz(6)
+  updated_at            DateTime                          @updatedAt @db.Timestamptz(6)
+  eligibility_rules     eligibility_rule[]
+  eligibility_summaries application_eligibility_summary[]
+
+  @@unique([rule_set_code, version_no], map: "uq_eligibility_rule_set_code_version")
+  @@index([is_active], map: "idx_eligibility_rule_set_is_active")
+}
+
+model eligibility_rule {
+  rule_id          String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  rule_set_id      String               @db.Uuid
+  rule_code        String               @db.VarChar(50)
+  rule_name        String               @db.VarChar(150)
+  metric_name      String               @db.VarChar(50)
+  operator         String               @db.VarChar(20)
+  threshold_value  Decimal?             @db.Decimal(12, 2)
+  threshold_min    Decimal?             @db.Decimal(12, 2)
+  threshold_max    Decimal?             @db.Decimal(12, 2)
+  expected_value   String?              @db.VarChar(50)
+  severity         String               @default("SOFT_FAIL") @db.VarChar(20)
+  failure_message  String               @db.Text
+  evaluation_order Int                  @default(1)
+  is_active        Boolean              @default(true)
+  created_by       String?              @db.Uuid
+  updated_by       String?              @db.Uuid
+  created_at       DateTime             @default(now()) @db.Timestamptz(6)
+  updated_at       DateTime             @updatedAt @db.Timestamptz(6)
+  rule_set         eligibility_rule_set @relation(fields: [rule_set_id], references: [rule_set_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([rule_set_id, rule_code], map: "uq_eligibility_rule_rule_set_code")
+  @@index([rule_set_id, is_active], map: "idx_eligibility_rule_rule_set_active")
+  @@index([metric_name], map: "idx_eligibility_rule_metric_name")
+}
+
+model application_eligibility_summary {
+  eligibility_summary_id String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  application_id         String               @db.Uuid
+  application_number     String               @db.VarChar(40)
+  rule_set_id            String               @db.Uuid
+  eligibility_status     String               @db.VarChar(30)
+  failed_rule_count      Int                  @default(0)
+  reason_json            Json?
+  decision_snapshot_json Json?
+  calculated_at          DateTime             @default(now()) @db.Timestamptz(6)
+  created_by             String?              @db.Uuid
+  updated_by             String?              @db.Uuid
+  created_at             DateTime             @default(now()) @db.Timestamptz(6)
+  updated_at             DateTime             @updatedAt @db.Timestamptz(6)
+  is_active              Boolean              @default(true)
+  loan_application       loan_application     @relation(fields: [application_id], references: [application_id], onDelete: Cascade, onUpdate: NoAction)
+  rule_set               eligibility_rule_set @relation(fields: [rule_set_id], references: [rule_set_id], onUpdate: NoAction)
+
+  @@index([application_id], map: "idx_application_eligibility_summary_application_id")
+  @@index([application_number], map: "idx_application_eligibility_summary_application_number")
+  @@index([rule_set_id], map: "idx_application_eligibility_summary_rule_set_id")
+  @@index([eligibility_status], map: "idx_application_eligibility_summary_status")
+}
+
+model teams {
+  team_id     String   @id @default(uuid()) @db.Uuid
+  team_code   String   @unique @db.VarChar(100)
+  team_name   String   @db.VarChar(150)
+  description String?  @db.Text
+  is_active   Boolean  @default(true)
+  created_at  DateTime @default(now()) @db.Timestamp(6)
+  updated_at  DateTime @updatedAt @db.Timestamp(6)
+
+  team_members           team_members[]
+  application_assignment application_assignment[]
+}
+
+model team_members {
+  team_member_id String   @id @default(uuid()) @db.Uuid
+  team_id        String   @db.Uuid
+  user_id        String   @db.Uuid
+  is_active      Boolean  @default(true)
+  created_at     DateTime @default(now()) @db.Timestamp(6)
+  updated_at     DateTime @updatedAt @db.Timestamp(6)
+
+  teams teams @relation(fields: [team_id], references: [team_id], onDelete: NoAction, onUpdate: NoAction)
+  users users @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([team_id, user_id])
+}
+
+model loan_product_config {
+  product_config_id                           String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  loan_type_id                                String     @unique(map: "uq_loan_product_config_loan_type_id") @db.Uuid
+  min_amount                                  Decimal    @db.Decimal(12, 2)
+  max_amount                                  Decimal    @db.Decimal(12, 2)
+  min_tenure_months                           Int
+  max_tenure_months                           Int
+  min_interest_rate                           Decimal    @db.Decimal(5, 2)
+  max_interest_rate                           Decimal    @db.Decimal(5, 2)
+  processing_fee_percent                      Decimal    @default(0) @db.Decimal(5, 2)
+  created_at                                  DateTime   @default(now()) @db.Timestamptz(6)
+  created_by                                  String?    @db.Uuid
+  updated_at                                  DateTime   @default(now()) @db.Timestamptz(6)
+  updated_by                                  String?    @db.Uuid
+  is_active                                   Boolean    @default(true)
+  loan_types                                  loan_types @relation(fields: [loan_type_id], references: [loan_type_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_loan_product_config_loan_type")
+  users_loan_product_config_created_byTousers users?     @relation("loan_product_config_created_byTousers", fields: [created_by], references: [user_id], onUpdate: NoAction, map: "fk_loan_product_config_created_by")
+  users_loan_product_config_updated_byTousers users?     @relation("loan_product_config_updated_byTousers", fields: [updated_by], references: [user_id], onUpdate: NoAction, map: "fk_loan_product_config_updated_by")
+
+  @@index([is_active], map: "idx_loan_product_config_is_active")
+}
+
+model application_action_history {
+  action_history_id      String   @id @default(uuid()) @db.Uuid
+  application_id         String   @db.Uuid
+  action_type            String   @db.VarChar(100)
+  from_status_id         String?  @db.Uuid
+  to_status_id           String   @db.Uuid
+  performed_by_user_id   String   @db.Uuid
+  performed_at           DateTime @default(now()) @db.Timestamptz(6)
+  performer_role_code    String   @db.VarChar(50)
+  decision_type_id       String?  @db.Uuid
+  remarks                String?  @db.Text
+  approved_loan_amount   Decimal? @db.Decimal(18, 2)
+  approved_interest_rate Decimal? @db.Decimal(5, 2)
+  approved_tenure_months Int?
+  approved_emi           Decimal? @db.Decimal(18, 2)
+  disbursed_amount       Decimal? @db.Decimal(18, 2)
+  metadata_json          Json?
+  created_at             DateTime @default(now()) @db.Timestamptz(6)
+  created_by             String   @db.Uuid
+  updated_at             DateTime @updatedAt @db.Timestamptz(6)
+  updated_by             String   @db.Uuid
+  is_active              Boolean  @default(true)
+
+  loan_application  loan_application    @relation(fields: [application_id], references: [application_id], onDelete: Cascade)
+  from_status       application_status? @relation("application_action_history_from_status", fields: [from_status_id], references: [status_id])
+  to_status         application_status  @relation("application_action_history_to_status", fields: [to_status_id], references: [status_id])
+  decision_type     decision_types?     @relation(fields: [decision_type_id], references: [decision_type_id])
+  performed_by_user users               @relation("application_action_history_performed_by", fields: [performed_by_user_id], references: [user_id])
+  created_by_user   users               @relation("application_action_history_created_by", fields: [created_by], references: [user_id])
+  updated_by_user   users               @relation("application_action_history_updated_by", fields: [updated_by], references: [user_id])
+
+  @@index([application_id], map: "idx_application_action_history_application_id")
+  @@index([action_type], map: "idx_application_action_history_action_type")
+  @@index([from_status_id], map: "idx_application_action_history_from_status_id")
+  @@index([to_status_id], map: "idx_application_action_history_to_status_id")
+  @@index([performed_by_user_id], map: "idx_application_action_history_performed_by_user_id")
+  @@index([decision_type_id], map: "idx_application_action_history_decision_type_id")
+  @@index([performed_at], map: "idx_application_action_history_performed_at")
+}
+
+model application_assignment {
+  assignment_id     String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  application_id    String    @db.Uuid
+  assigned_team_id  String?   @db.Uuid
+  assigned_user_id  String?   @db.Uuid
+  assignment_status String    @default("ACTIVE") @db.VarChar(30)
+  assigned_at       DateTime  @default(now()) @db.Timestamptz(6)
+  assigned_by       String    @db.Uuid
+  unassigned_at     DateTime? @db.Timestamptz(6)
+  unassigned_by     String?   @db.Uuid
+  remarks           String?   @db.Text
+  is_current        Boolean   @default(true)
+  is_active         Boolean   @default(true)
+  created_at        DateTime  @default(now()) @db.Timestamptz(6)
+  created_by        String    @db.Uuid
+  updated_at        DateTime  @updatedAt @db.Timestamptz(6)
+  updated_by        String?   @db.Uuid
+
+  loan_application                                  loan_application @relation(fields: [application_id], references: [application_id], onDelete: Cascade, onUpdate: NoAction)
+  teams                                             teams?           @relation(fields: [assigned_team_id], references: [team_id], onDelete: Restrict, onUpdate: NoAction)
+  users_application_assignment_assigned_userTousers users?           @relation("application_assignment_assigned_userTousers", fields: [assigned_user_id], references: [user_id], onDelete: Restrict, onUpdate: NoAction)
+  users_application_assignment_assigned_byTousers   users            @relation("application_assignment_assigned_byTousers", fields: [assigned_by], references: [user_id], onDelete: Restrict, onUpdate: NoAction)
+  users_application_assignment_unassigned_byTousers users?           @relation("application_assignment_unassigned_byTousers", fields: [unassigned_by], references: [user_id], onDelete: Restrict, onUpdate: NoAction)
+  users_application_assignment_created_byTousers    users            @relation("application_assignment_created_byTousers", fields: [created_by], references: [user_id], onDelete: Restrict, onUpdate: NoAction)
+  users_application_assignment_updated_byTousers    users?           @relation("application_assignment_updated_byTousers", fields: [updated_by], references: [user_id], onDelete: Restrict, onUpdate: NoAction)
+
+  @@index([application_id], map: "idx_application_assignment_application")
+  @@index([assigned_team_id], map: "idx_application_assignment_team")
+  @@index([assigned_user_id], map: "idx_application_assignment_user")
+  @@index([is_current], map: "idx_application_assignment_current")
+  @@index([application_id, is_current], map: "idx_application_assignment_application_current")
+  @@index([assigned_team_id, is_current], map: "idx_application_assignment_team_current")
+  @@index([assigned_user_id, is_current], map: "idx_application_assignment_user_current")
+}
+
+model user_auth_audit_log {
+  auth_audit_id    String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id          String?  @db.Uuid
+  login_identifier String?  @db.VarChar(255)
+  event_type       String   @db.VarChar(40)
+  success          Boolean  @default(false)
+  failure_reason   String?  @db.VarChar(255)
+  ip_address       String?  @db.VarChar(80)
+  user_agent       String?  @db.VarChar(255)
+  created_at       DateTime @default(now()) @db.Timestamptz(6)
+
+  user users? @relation(fields: [user_id], references: [user_id], onDelete: SetNull, onUpdate: NoAction)
+
+  @@index([user_id], map: "idx_user_auth_audit_user_id")
+  @@index([event_type], map: "idx_user_auth_audit_event_type")
+  @@index([created_at(sort: Desc)], map: "idx_user_auth_audit_created_at")
+}
