@@ -5,9 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
-    "build": "tsup",
-    "start": "node dist/index.js",
+    "dev": "DOTENV_CONFIG_PATH=.env ts-node-dev --respawn --transpile-only src/index.ts",
+    "build": "DOTENV_CONFIG_PATH=.env tsup",
+    "start": "DOTENV_CONFIG_PATH=.env node -r dotenv/config dist/index.js",
+    "build:prod": "DOTENV_CONFIG_PATH=.env.prod tsup",
+    "start:prod": "DOTENV_CONFIG_PATH=.env.prod node -r dotenv/config dist/index.js",
     "lint": "prettier --check . && eslint src/**/*.ts",
     "format": "prettier --write .",
     "prisma:generate": "npx prisma generate"

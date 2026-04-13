@@ -77,6 +77,14 @@ The API serves as a backend service for the main application located at [Team4Ca
 
 The server will start on `http://0.0.0.0:3001` by default.
 
+### Production build and start
+
+To build and start using production environment variables from `.env.prod`:
+```bash
+npm run build:prod
+npm run start:prod
+```
+
 ### Development Mode
 
 For development with hot reloading:
